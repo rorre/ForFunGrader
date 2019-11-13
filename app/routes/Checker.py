@@ -1,20 +1,7 @@
-from quart import Quart, request, render_template, jsonify, flash, url_for, redirect
-import asyncio
-import os
-import subprocess
-import random
-import string
-import functools
-import config
+from quart import render_template, request, jsonify, Blueprint
+import subprocess, asyncio, random, string, os, functools
 
-app = Quart(__name__)
-app.secret_key = config.secret
-
-
-@app.route('/')
-async def index():
-    return await render_template('index.html')
-
+CheckerBlueprint = Blueprint('checker', __name__)
 
 def check_script(filename, test):
     test_files = os.listdir('cases/' + test)
@@ -41,7 +28,7 @@ def check_script(filename, test):
     return {'status': 200, 'message': 'OK'}
 
 
-@app.route('/check', methods=['POST'])
+@CheckerBlueprint.route('/check', methods=['POST'])
 async def check():
     files = await request.files
     if 'file' not in files:
@@ -71,5 +58,3 @@ async def check():
         pass
 
     return jsonify(result)
-
-app.run()
