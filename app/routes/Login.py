@@ -32,27 +32,25 @@ async def user_login():
 async def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    if request.method == 'POST':
-        form = await request.form
-        username = form['username']
-        password = form['password']
-        email = form['email']
+    if request.method == 'GET':
+        return await render_template('register.html')
+    
+    form = await request.form
+    username = form['username']
+    password = form['password']
+    email = form['email']
 
-        new_user = User(username=username, password_hash=generate_password_hash(password), email=email)
-        db.session.add(new_user)
-        db.session.commit()
+    if User.query.filter_by(username=username) or User.query.filter_by(email=email):
+        await flash("Username or email already taken.")
+        return await render_template('register.html')
 
-        login_user(new_user)
-        return redirect(url_for('index'))
-    return render_template('login.html')
-    '''
-                <form method='POST'>
-                <input type='text' name='username' id='username' placeholder='username'></input>
-                <input type='password' name='password' id='password' placeholder='password'></input>
-                <input type='text' name='email' id='email' placeholder='email'></input>
-                <input type='submit' name='submit'></input>
-               </form>
-    '''
+    new_user = User(username=username, password_hash=generate_password_hash(password), email=email)
+    db.session.add(new_user)
+    db.session.commit()
+
+    login_user(new_user)
+    return redirect(url_for('index'))
+
 
 @LoginBlueprint.route('/logout')
 async def logout():

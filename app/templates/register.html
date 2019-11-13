@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Register -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+    
+<div class="row">
+    <form class="col s12" method='POST'>
+        <div class="row">
+            <div class="input-field row">
+                <input id="username" type="text" class="validate" name="username">
+                <label for="username">Username</label>
+            </div>
+            <div class="input-field row">
+                    <input id="email" type="email" class="validate" name="email">
+                    <label for="email">E-mail</label>
+                </div>
+            <div class="input-field row">
+                <input id="password" type="password" class="validate" name="password">
+                <label for="password">Password</label>
+            </div>
+        </div>
+        <button class="btn waves-effect waves-light" id="submit" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
