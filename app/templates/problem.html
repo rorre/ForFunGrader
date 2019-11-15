@@ -1,25 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Index -- Grader{% endblock %}
-
+{% block title %}{{ problem.name }} -- Grader{% endblock %}
 {% block body %}
-<h2>
-    Python Grader
-</h2>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
 
+<h2>Problem - {{ problem.name }}</h2>
 <hr>
-
-<blockquote>
-    <h5>Warn:</h5>
-    <ul>
-        <li>- Gunakan nama file yang sama dengan apa yang diminta!</li>
-        <li>- Apabila site tidak merespon, harap hubungi.</li>
-        <li>- Waktu eksekusi program maksimal 5 detik!</li>
-    </ul>
-</blockquote>
-
+<h4>Details</h4>
+<p>File name: {{ problem.test_folder}}.py</p>
+{{ problem.details }}
 <hr>
-
-{% if current_user.is_authenticated %}
+<h4>Sample Input</h4>
+{% autoescape false %}
+    {{ problem.sample_input | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}
+{% endautoescape %}
+<hr>
+<h4>Sample Output</h4>
+{% autoescape false %}
+    {{ problem.sample_output | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}
+{% endautoescape %}
+<hr>
+<hr>
 <div class="row">
     <form action="check" id="post-form" method="post" enctype="multipart/form-data">
         <div class="file-field input-field col s10">
@@ -36,51 +44,14 @@
     <i class="material-icons right">send</i>
     </button>
 </div>
-{% else %}
-<p>Please login.</p>
-{% endif %}
 
 <hr>
 
-<h5>Hasil:</h5>
+<h5>Result:</h5>
 <code id=output style=display:block;white-space:pre-wrap></code>
 <hr>
 
-<h2 id="api">API</h2>
-<h3>/check</h3>
-<p>Checks python file.</p>
-
-<h4>Required info</h4>
-<p>A python file uploaded with type <code>multipart/form-data</code> with the filename as the test case.</p>
-
-<h4>Response</h4>
-<p>A JSON containing result of python check.</p>
-
-<pre><code class="json language-json">{
-    'status' : 200,
-    'message': 'OK'
-}
-</code></pre>
-
-<h4>Exceptions</h4>
-<pre><code class="json language-json">{
-    'status' : 400,
-    // String errors
-    'err'    : "Please upload a file."
-    'err'    : "Only Python."
-    'err'    : "No test with that name."
-    // Check error
-    'err'    : {
-        'expected': "1",   // Server's python output
-        'output': "11+",   // Client's python output
-        'testno': 1,       // Test number that the python script fails on
-        'maxtest': 5,      // Number of test cases
-        'input': "1"       // stdin
-    }
-}
-</code></pre>
 {% endblock %}
-    
 {% block script %}
 <script>
     $("#submit").click(function(){
@@ -91,7 +62,7 @@
         })
 
         $.ajax({
-            url: 'check',
+            url: '../check',
             type: 'POST',
         
             data: new FormData($('#post-form')[0]),

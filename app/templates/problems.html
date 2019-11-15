@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Problem Listing -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+<h2>Problem list</h2>
+<hr>
+<ul>
+    {% for problem in problems %}
+        <li>- <a href="/problem/{{ problem.id }}">{{ problem.name }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

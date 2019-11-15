@@ -1,2 +1,2 @@
 from .Task import Submission, Problem
-from .User import User
+from .User import User, Role

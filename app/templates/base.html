@@ -4,12 +4,13 @@
         <title>{% block title %}{% endblock %}</title>
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <!--Import materialize.css-->
-        <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"  media="screen,projection"/>
-        <!--Let browser know website is optimized for mobile-->
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <!-- Compiled and minified JavaScript -->
+               <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/themes/prism.min.css" integrity="sha256-77qGXu2p8NpfcBpTjw4jsMeQnz0vyh74f5do0cWjQ/Q=" crossorigin="anonymous" />
         <style>
             body {
@@ -22,27 +23,44 @@
                 flex: 1 0 auto;
             }
         </style>
+
+        <script>
+        $(document).ready(function(){
+            $(".dropdown-trigger").dropdown();   
+        })
+        </script>
     </head>
 
     <body>
+        {% if current_user %}
+            <ul id="dropdown1" class="dropdown-content">
+                <li>Score: {{ current_user.score }}</li>
+                <li class="divider"></li>
+                <li><a href="{{ url_for('login.logout') }}">Logout</a></li>
+            </ul>
+        {% endif %}
         <nav class="light-blue lighten-1" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Grader</a>
-                {% if not current_user or not current_user.is_authenticated %}
-                <ul class="right hide-on-med-and-down">
+            <div class="nav-wrapper container"><a id="logo-container" href="{{ url_for('index') }}" class="brand-logo">Grader</a>
+                {% if not current_user.is_authenticated %}
+                <ul class="right">
                     <li><a href="{{ url_for('login.register') }}">Register</a></li>
                 </ul>
         
                 <ul id="nav-mobile" class="right">
                     <li><a href="{{ url_for('login.user_login') }}">Login</a></li>
+                </ul>                
+                {% endif %}
+                <ul class="right">
+                    <li><a href="{{ url_for('task.problems') }}">Problems</a></li>
                 </ul>
-                {% else %}
-                <ul id="nav-mobile" class="right">
-                        <li><a href="#">Hello, {{ current_user.username }}</a></li>
-                </ul>
-                <ul id="nav-mobile" class="right">
-                        <li><a href="{{ url_for('login.logout') }}">Logout</a></li>
+                {% if current_user.is_authenticated and current_user.role.name == "Admin" %}
+                <ul class="right">
+                    <li><a href="{{ url_for('task.create_problem') }}">Create</a></li>
                 </ul>
                 {% endif %}
+                {% if current_user.is_authenticated %}
+                    <li><a class="dropdown-trigger right" href="#!" data-target="dropdown1">Hello, {{ current_user.username }}<i class="material-icons right">arrow_drop_down</i></a></li>
+                    {% endif %}
             </div>
         </nav>
         <div class="container">
@@ -50,5 +68,5 @@
         </div>
     </body>
     
-    {% block javascript %}{% endblock %}
+    {% block script %}{% endblock %}
 </html>

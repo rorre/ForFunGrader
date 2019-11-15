@@ -36,11 +36,15 @@ async def register():
         return await render_template('register.html')
     
     form = await request.form
-    username = form['username']
-    password = form['password']
-    email = form['email']
+    username = form.get('username')
+    password = form.get('password')
+    email = form.get('email')
 
-    if User.query.filter_by(username=username) or User.query.filter_by(email=email):
+    if not username or not password or not email:
+        await flash("Please input to all forms.")
+        return await render_template('register.html')
+
+    if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
         await flash("Username or email already taken.")
         return await render_template('register.html')
 
