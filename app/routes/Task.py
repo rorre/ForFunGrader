@@ -24,6 +24,7 @@ def test_checker(files, max_time):
             raise e
 
 @TaskBlueprint.route('/problem/<int:problem_id>')
+@login_required
 async def problem(problem_id):
     problem_db = Problem.query.get(problem_id)
     if not problem_db:
