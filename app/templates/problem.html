@@ -15,17 +15,23 @@
 <hr>
 <h4>Details</h4>
 <p>File name: {{ problem.test_folder}}.py</p>
-<p>{{ problem.details }}</p>
+{% for line in problem.details.splitlines() %}
+    {{line|markdown}}
+{% endfor %}
 <hr>
 <h4>Sample Input</h4>
-{% autoescape false %}
-    <p>{{ problem.sample_input | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}</p>
-{% endautoescape %}
+<p>
+    {% for line in problem.sample_input.splitlines() %}
+        {{line}}<br>
+    {% endfor %}
+</p>
 <hr>
 <h4>Sample Output</h4>
-{% autoescape false %}
-    <p>{{ problem.sample_output | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}</p>
-{% endautoescape %}
+<p>
+    {% for line in problem.sample_output.splitlines() %}
+        {{line}}<br>
+    {% endfor %}
+</p>
 <hr>
 <hr>
 <div class="row">

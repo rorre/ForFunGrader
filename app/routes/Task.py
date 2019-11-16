@@ -64,6 +64,10 @@ async def create_problem():
         await flash("You must provide a correct.py file!")
         return await render_template('creator.html')
 
+    if len(files) == 1:
+        await flash("Please provide at least one test case!")
+        return await render_template('creator.html')
+
     existing_db = Problem.query.filter_by(test_folder=test_name).first()
     if existing_db:
         await flash("There's already a test with that name.")

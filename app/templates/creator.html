@@ -12,7 +12,13 @@
 {% endwith %}
 <h2>Problem Creator</h2>
 <hr>
-
+<h4>Warning:</h4>
+<blockquote><ul>
+    <li>- You <strong>MUST</strong> provide a correct.py file with a script that will be used as a reference for answers!</li>
+    <li>- Maximum score will be number of the test cases you provided!</li>
+    <li>- You are free to name your test cases whatever you like.</li>
+</ul></blockquote>
+<hr>
 <div class="row">
     <form class="col s12" method='POST' enctype="multipart/form-data">
         <div class="row">
@@ -46,6 +52,7 @@
             <div class="input-field col s12">
                 <textarea name="details" class="materialize-textarea"></textarea>
                 <label for="details">Problem Details</label>
+                <span class="details">You may format your details with Markdown.</span>
             </div>
         </div>
         <div class="row">
