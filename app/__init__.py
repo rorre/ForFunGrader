@@ -8,6 +8,7 @@ import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_misaka import Misaka
 
 #app = Flask(__name__)
 app = Quart(__name__)
@@ -19,17 +20,18 @@ async def index():
     return await render_template('index.html')
 
 @app.errorhandler(401)
-async def forbidden():
+async def forbidden(error):
     return await render_template('forbidden.html')
 
 @app.errorhandler(404)
-async def forbidden():
+async def notfound(error):
     return await render_template('notfound.html')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login.user_login'
+misaka =  Misaka(app)
 
 from app.routes import Checker, Login, Task
 app.register_blueprint(Checker.CheckerBlueprint)
