@@ -1,5 +1,5 @@
 from app.models import Problem
-from quart import render_template, Blueprint, flash, url_for, redirect, request
+from quart import render_template, Blueprint, flash, url_for, redirect, request, abort
 from flask_login import login_required, current_user
 from app.helper import make_problem, call_child, make_random_str
 import os, subprocess, shutil, traceback
@@ -43,13 +43,12 @@ async def problems():
 @login_required
 async def create_problem():
     if not current_user.role or current_user.role.name != "Admin":
-        return redirect(url_for('index')), 400
+        abort(401)
     if request.method == "GET":
         return await render_template('creator.html')
 
     form = await request.form
     files = (await request.files).getlist('file')
-    print(form)
     test_name = form.get('test_name')
     readable_name = form.get('readable_name')
     max_time = int(form.get('max_time'))
@@ -61,7 +60,6 @@ async def create_problem():
         await flash("Please upload valid test cases.")
         return await render_template('creator.html')
 
-    print(files)
     if not any(x.filename == 'correct.py' for x in files):
         await flash("You must provide a correct.py file!")
         return await render_template('creator.html')

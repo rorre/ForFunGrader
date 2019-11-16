@@ -2,3 +2,4 @@ quart
 flask-sqlalchemy
 flask-migrate
 flask-login
+Flask-Misaka

@@ -15,16 +15,16 @@
 <hr>
 <h4>Details</h4>
 <p>File name: {{ problem.test_folder}}.py</p>
-{{ problem.details }}
+<p>{{ problem.details }}</p>
 <hr>
 <h4>Sample Input</h4>
 {% autoescape false %}
-    {{ problem.sample_input | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}
+    <p>{{ problem.sample_input | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}</p>
 {% endautoescape %}
 <hr>
 <h4>Sample Output</h4>
 {% autoescape false %}
-    {{ problem.sample_output | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}
+    <p>{{ problem.sample_output | replace('\r\n', "<br>") | replace('\r', "<br>") | replace('\n', "<br>") }}</p>
 {% endautoescape %}
 <hr>
 <hr>

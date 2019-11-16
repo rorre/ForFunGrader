@@ -18,10 +18,18 @@ app.config.from_object(config.Config)
 async def index():
     return await render_template('index.html')
 
+@app.errorhandler(401)
+async def forbidden():
+    return await render_template('forbidden.html')
+
+@app.errorhandler(404)
+async def forbidden():
+    return await render_template('notfound.html')
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
-login.login_view = 'login'
+login.login_view = 'login.user_login'
 
 from app.routes import Checker, Login, Task
 app.register_blueprint(Checker.CheckerBlueprint)

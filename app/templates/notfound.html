@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Forbidden -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+<h4>Not Found</h4>
+<p>We can find that thing on our server.</p>
+{% endblock %}
