@@ -38,9 +38,11 @@ async def register():
     form = await request.form
     username = form.get('username')
     password = form.get('password')
+    first_name = form.get('first')
+    last_name = form.get('last')
     email = form.get('email')
 
-    if not username or not password or not email:
+    if not all((username, password, email, first_name, last_name)):
         await flash("Please input to all forms.")
         return await render_template('register.html')
 
@@ -48,7 +50,12 @@ async def register():
         await flash("Username or email already taken.")
         return await render_template('register.html')
 
-    new_user = User(username=username, password_hash=generate_password_hash(password), email=email)
+    new_user = User(
+        username=username,
+        password_hash=generate_password_hash(password),
+        email=email,
+        first_name=first_name,
+        last_name=last_name)
     db.session.add(new_user)
     db.session.commit()
 
@@ -77,5 +84,6 @@ async def change_password():
         return await render_template('changepw.html')
     
     current_user.set_password(newpw)
+    db.session.commit()
     await flash("Done!")
     return redirect(url_for('index'))

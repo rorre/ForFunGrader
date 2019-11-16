@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Register -- Grader{% endblock %}
+{% block title %}Edit -- Grader{% endblock %}
 {% block body %}
 {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -10,7 +10,7 @@
         </blockquote>
     {% endif %}
 {% endwith %}
-<h2>Register</h2>
+<h2>Edit</h2>
 <hr>
 <div class="row">
     <form class="col s12" method='POST'>
@@ -24,20 +24,10 @@
                     <label for="last">Last Name</label>
             </div>
         </div>
-        <div class="row">
-            <div class="input-field s6">
-                <input id="username" type="text" class="validate" name="username">
-                <label for="username">Username</label>
+        <div class="input-field row">
+                <input id="email" type="email" class="validate" name="email">
+                <label for="email">E-mail</label>
             </div>
-            <div class="input-field s6">
-                <input id="password" type="password" class="validate" name="password">
-                <label for="password">Password</label>
-            </div>
-            <div class="input-field row">
-                    <input id="email" type="email" class="validate" name="email">
-                    <label for="email">E-mail</label>
-            </div>
-        </div>
         <button class="btn waves-effect waves-light" id="submit" type="submit">Submit</button>
     </form>
 </div>

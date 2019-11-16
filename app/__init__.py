@@ -11,7 +11,7 @@ from flask_login import LoginManager
 from flask_misaka import Misaka
 
 #app = Flask(__name__)
-app = Quart(__name__)
+app = Quart(__name__, static_url_path='', static_folder='static')
 app.config.from_object(config.Config)
 
 
@@ -33,8 +33,9 @@ login = LoginManager(app)
 login.login_view = 'login.user_login'
 misaka =  Misaka(app)
 
-from app.routes import Checker, Login, Task
+from app.routes import Checker, Login, Task, User
 app.register_blueprint(Checker.CheckerBlueprint)
 app.register_blueprint(Login.LoginBlueprint)
 app.register_blueprint(Task.TaskBlueprint)
+app.register_blueprint(User.UserBlueprint)
 from app import models, helper

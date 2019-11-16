@@ -17,6 +17,9 @@ class User(UserMixin, db.Model):
     score = db.Column(db.Integer, default=0)
     role = db.relationship('Role', backref='users', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+    me = db.Column(db.Text, default="This place seems empty...")
+    first_name = db.Column(db.Text)
+    last_name = db.Column(db.Text)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)

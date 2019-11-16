@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Submissions -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+    <div class="col s3">
+        <img src="/avatars/{{ user.id }}" alt="" class="circle responsive-img">
+        <h4><strong>{{ user.username }}</strong></h4>
+        {% if user.role %}
+            <p style="color:{{user.role.color}}">{{ user.role.name }}</p>
+        {% endif %}
+    </div>
+    <div class="col s9">
+        <table>
+            <thead>
+                <tr>
+                    <th>Problem Set</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for submission in user.submissions %}
+                <tr>
+                    <td><a href={{ url_for('task.problem', problem_id=submission.problem.id) }}>{{ submission.problem.name }}</a></td>
+                    <td>{{ submission.score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

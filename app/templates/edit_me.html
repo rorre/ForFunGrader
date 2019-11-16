@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Edit -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+
+<h2>Edit</h2>
+<hr>
+<div class="row">
+    <form class="col s12" method='POST'>
+        <div class="row">
+            <div class="input-field col s12">
+                <textarea name="me" class="materialize-textarea">{{ me }}</textarea>
+                <label for="me">About Me!</label>
+                <span class="me">You may format with Markdown.</span>
+            </div>
+        </div>
+        <button class="btn waves-effect waves-light" id="submit" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

@@ -34,9 +34,7 @@
     <body>
         {% if current_user %}
             <ul id="dropdown1" class="dropdown-content">
-                <li>Score: {{ current_user.score }}</li>
-                <li class="divider"></li>
-                <li><a href="{{ url_for('login.change_password') }}">Change Password</a></li>
+                <li><a href="{{ url_for('user.settings') }}">Settings</a></li>
                 <li><a href="{{ url_for('login.logout') }}">Logout</a></li>
             </ul>
         {% endif %}

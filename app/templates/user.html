@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }} -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+    <div class="col s3">
+        <img src="/avatars/{{ user.id }}" alt="" class="circle responsive-img">
+        <h4><strong>{{ user.first_name }} {{ user.last_name }}</strong></h4>
+        <p><small>{{ user.username }}</small></p>
+        {% if user.role %}
+            <p style="color:{{user.role.color}}">{{ user.role.name }}</p>
+        {% endif %}
+    </div>
+    <div class="col s9">
+        <h4>Statistic</h4>
+        <hr>
+        <p><strong>Submissions:</strong> {{ total_submissions }}</p>
+        <p><strong>Score:</strong> {{ user.score }}</p>
+        <hr>
+        <h4>About Me!</h4>
+        <hr>
+        {% if user.me %}
+            {% for line in user.me.splitlines() %}
+                {{line|markdown}}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

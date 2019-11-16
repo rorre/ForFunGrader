@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Settings -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+
+<h2>Settings</h2>
+<hr>
+<h4>Account</h4>
+<hr>
+<a href="{{ url_for('login.change_password') }}">Change password</a>
+<h4>Profile</h4>
+<hr>
+<a href="{{ url_for('user.edit_me') }}">Edit About Me section</a><br>
+<a href="{{ url_for('user.edit_info') }}">Edit profile info</a>
+{% endblock %}
