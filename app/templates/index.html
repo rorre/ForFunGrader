@@ -2,6 +2,15 @@
 {% block title %}Index -- Grader{% endblock %}
 
 {% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
 <h2>
     Welcome!
 </h2>

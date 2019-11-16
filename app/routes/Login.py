@@ -3,7 +3,7 @@ from quart import Blueprint, request, redirect, url_for, render_template, flash
 from app import login, db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 
 LoginBlueprint = Blueprint('login', __name__)
 
@@ -21,7 +21,7 @@ async def user_login():
     password = form['password']
 
     user = User.query.filter_by(username=username).first()
-    if not user or not check_password_hash(user.password_hash, password):
+    if not user or not user.check_password(password):
         await flash("Wrong username/password")
         return redirect(url_for('login.user_login'))
 
@@ -59,4 +59,23 @@ async def register():
 @LoginBlueprint.route('/logout')
 async def logout():
     logout_user()
+    return redirect(url_for('index'))
+
+
+@LoginBlueprint.route('/changepw', methods=["GET", "POST"])
+@login_required
+async def change_password():
+    if request.method == "GET":
+        return await render_template('changepw.html')
+    
+    form = await request.form
+    curpw = form.get('curpassword')
+    newpw = form.get('newpassword')
+
+    if not current_user.check_password(curpw):
+        await flash("Wrong password.")
+        return await render_template('changepw.html')
+    
+    current_user.set_password(newpw)
+    await flash("Done!")
     return redirect(url_for('index'))

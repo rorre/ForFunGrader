@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Change Password -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+
+<h2>Change Password</h2>
+<hr>
+<div class="row">
+    <form class="col s12" method='POST'>
+        <div class="row">
+            <div class="input-field row">
+                <input id="curpassword" type="password" class="validate" name="curpassword">
+                <label for="curpassword">Password</label>
+            </div>
+            <div class="input-field row">
+                <input id="newpassword" type="password" class="validate" name="newpassword">
+                <label for="newpassword">New Password</label>
+            </div>
+        </div>
+        <button class="btn waves-effect waves-light" id="submit" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
