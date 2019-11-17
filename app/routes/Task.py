@@ -22,6 +22,7 @@ def test_checker(files, max_time):
         except Exception as e:
             shutil.rmtree(tmpdir, ignore_errors=True)
             raise e
+    return tmpdir
 
 @TaskBlueprint.route('/problem/<int:problem_id>')
 @login_required
@@ -80,7 +81,7 @@ async def create_problem():
     details = html.escape(details)
 
     try:
-        test_checker(files, max_time)
+        tmpdir = test_checker(files, max_time)
     except subprocess.TimeoutExpired:
         await flash("Your correct.py timed out. Consider raising maximum time or optimize your code.")
         return await render_template('creator.html')
@@ -92,8 +93,7 @@ async def create_problem():
     try:
         dirname = 'cases/' + test_name
         os.mkdir(dirname)
-        for f in files:
-            f.save(f'{dirname}/{f.filename}')
+        shutil.move(tmpdir, dirname)
         make_problem(test_name, readable_name, max_time, i_sample, o_sample, details)
         await flash("OK!")
     except:
