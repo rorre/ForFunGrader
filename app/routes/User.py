@@ -2,7 +2,7 @@ from app.models import User
 from quart import Blueprint, request, redirect, url_for, render_template, flash, abort
 from app import login, db
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
+import os, html
 
 from flask_login import current_user, login_user, logout_user, login_required
 
@@ -41,7 +41,12 @@ async def edit_me():
     if request.method == "GET":
         return await render_template('edit_me.html', me=current_user.me)
     
-    current_user.me = (await request.form).get('me')
+    me = (await request.form).get('me')
+    if not me or len(me) < 5:
+        await flash("Please input at least 5 characters.")
+        return await render_template('edit_me.html')
+
+    current_user.me = html.escape(me)
     db.session.commit()
     await flash("Done!")
     return await render_template('edit_me.html', me=current_user.me)

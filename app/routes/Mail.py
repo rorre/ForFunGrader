@@ -10,5 +10,8 @@ MailBlueprint = Blueprint('mail', __name__)
 @MailBlueprint.route('/resend')
 @login_required
 async def send():
+    if current_user.verified:
+        await flash("You are already verified.")
+        abort(400)
     await send_mail(current_user, make_random_str(6))
     return redirect(url_for('login.verify'))

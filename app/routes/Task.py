@@ -2,7 +2,7 @@ from app.models import Problem
 from quart import render_template, Blueprint, flash, url_for, redirect, request, abort
 from flask_login import login_required, current_user
 from app.helper import make_problem, call_child, make_random_str
-import os, subprocess, shutil, traceback
+import os, subprocess, shutil, traceback, html
 TaskBlueprint = Blueprint('task', __name__)
 
 
@@ -72,6 +72,12 @@ async def create_problem():
     if existing_db:
         await flash("There's already a test with that name.")
         return await render_template('creator.html')
+
+    if not all((files, test_name, readable_name, max_time, i_sample, o_sample, details)):
+        await flash("Please input all fields.")
+        return await render_template('creator.html')
+
+    details = html.escape(details)
 
     try:
         test_checker(files, max_time)
