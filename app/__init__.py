@@ -4,16 +4,18 @@ import quart.flask_patch
 from quart import Quart, render_template
 from flask import Flask
 import config
+import asyncio
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_misaka import Misaka
+from aiosmtplib import SMTP, errors
+import traceback
 
 #app = Flask(__name__)
 app = Quart(__name__, static_url_path='', static_folder='static')
 app.config.from_object(config.Config)
-
 
 @app.route('/')
 async def index():
@@ -27,15 +29,38 @@ async def forbidden(error):
 async def notfound(error):
     return await render_template('notfound.html')
 
+@app.before_serving
+async def startup():
+    loop = asyncio.get_event_loop()
+    try:
+        app.smtp = SMTP(hostname=app.config.get('SMTP_SERVER_URL'), start_tls=True, loop=loop)
+        await app.smtp.connect()
+        await app.smtp.ehlo()
+        await app.smtp.login(app.config.get('SMTP_USERNAME'), app.config.get('SMTP_PASSWORD'))
+    except errors.SMTPAuthenticationError as e:
+        print("Cannot seem to be able to connect.")
+        print("Mail verification will not work.")
+        print(e.message)
+    except:
+        traceback.print_exc()
+        print("An error occured while trying to connect to SMTP server.")
+        print("Mail verification will not work.")
+
+@app.after_serving
+async def shutdown():
+    if app.smtp:
+        app.smtp.close()
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login.user_login'
 misaka =  Misaka(app)
 
-from app.routes import Checker, Login, Task, User
+from .routes import Checker, Login, Task, User, Mail
 app.register_blueprint(Checker.CheckerBlueprint)
 app.register_blueprint(Login.LoginBlueprint)
 app.register_blueprint(Task.TaskBlueprint)
 app.register_blueprint(User.UserBlueprint)
+app.register_blueprint(Mail.MailBlueprint)
 from app import models, helper

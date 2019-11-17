@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Verification -- Grader{% endblock %}
+{% block body %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <blockquote>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </blockquote>
+    {% endif %}
+{% endwith %}
+
+<h2>Verification</h2>
+<hr>
+<p>We have sent you an email containing a verification code. Please input the code here.</p>
+<p>If you don't receive any email, <a href="{{ url_for('mail.send') }}">click here</a> to resend.</p>
+<div class="row">
+    <form class="col s12" method='POST'>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="code" type="text" class="validate" name="code">
+                <label for="code">Verification Code</label>
+            </div>
+        </div>
+        <button class="btn waves-effect waves-light" id="submit" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

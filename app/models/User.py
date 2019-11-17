@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
     me = db.Column(db.Text, default="This place seems empty...")
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
+    verified = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)

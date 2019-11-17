@@ -4,6 +4,7 @@ from app import login, db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask_login import current_user, login_user, logout_user, login_required
+from app.helper import get_token
 
 LoginBlueprint = Blueprint('login', __name__)
 
@@ -17,8 +18,8 @@ async def user_login():
 
     form = await request.form
 
-    username = form['username']
-    password = form['password']
+    username = form.get('username')
+    password = form.get('password')
 
     user = User.query.filter_by(username=username).first()
     if not user or not user.check_password(password):
@@ -60,7 +61,8 @@ async def register():
     db.session.commit()
 
     login_user(new_user)
-    return redirect(url_for('index'))
+    await flash("Registered.")
+    return redirect(url_for('mail.send'))
 
 
 @LoginBlueprint.route('/logout')
@@ -84,6 +86,30 @@ async def change_password():
         return await render_template('changepw.html')
     
     current_user.set_password(newpw)
+    db.session.commit()
+    await flash("Done!")
+    return redirect(url_for('index'))
+
+@LoginBlueprint.route('/verify', methods=["GET", "POST"])
+@login_required
+async def verify():
+    if request.method == "GET":
+        if current_user.verified:
+            await flash("You are already verified.")
+            return redirect(url_for('index'))
+        return await render_template('verify.html')
+    
+    code = (await request.form).get('code')
+    token = get_token(current_user.id)
+    if not token:
+        await flash('Code timed out.')
+        return await render_template('verify.html')
+    
+    if token != code:
+        await flash("Wrong Code.")
+        return await render_template('verify.html')
+    
+    current_user.verified = True
     db.session.commit()
     await flash("Done!")
     return redirect(url_for('index'))

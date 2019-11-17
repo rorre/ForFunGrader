@@ -63,6 +63,9 @@
             </div>
         </nav>
         <div class="container">
+                {% if current_user.is_authenticated and not current_user.verified %}
+                    <blockquote>Please verify your email <a href="{{ url_for('mail.send') }}">here</a>.</blockquote>
+                {% endif %}
                 {% block body %}{% endblock %}
         </div>
     </body>
