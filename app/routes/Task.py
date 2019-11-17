@@ -92,7 +92,6 @@ async def create_problem():
 
     try:
         dirname = 'cases/' + test_name
-        os.mkdir(dirname)
         shutil.move(tmpdir, dirname)
         make_problem(test_name, readable_name, max_time, i_sample, o_sample, details)
         await flash("OK!")
