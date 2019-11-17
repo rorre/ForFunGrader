@@ -42,7 +42,7 @@ async def edit_me():
     if request.method == "GET":
         return await render_template('edit_me.html', me=curme)
     
-    me = (await request.form).get('me')
+    me = (await request.form).get('me', '').strip()
     if not me or len(me) < 5:
         await flash("Please input at least 5 characters.")
         return await render_template('edit_me.html', me=curme)
@@ -62,13 +62,21 @@ async def edit_info():
     first_name = form.get('first')
     last_name = form.get('last')
     email = form.get('email')
+    
+    if email != current_user.email:
+        current_user.verified = False
+        redirect = True
 
     current_user.first_name = first_name or current_user.first_name
     current_user.last_name = last_name or current_user.last_name
     current_user.email = email or current_user.email
     db.session.commit()
     await flash("Done!")
-    return await render_template('edit_info.html')
+    
+    if redirect:
+        return redirect(url_for('mail.send'))
+    else:
+        return await render_template('edit_info.html')
 
 @UserBlueprint.route('/settings', methods=["GET", "POST"])
 @login_required

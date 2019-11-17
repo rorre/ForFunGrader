@@ -37,11 +37,11 @@ async def register():
         return await render_template('register.html')
     
     form = await request.form
-    username = form.get('username')
-    password = form.get('password')
-    first_name = form.get('first')
-    last_name = form.get('last')
-    email = form.get('email')
+    username = form.get('username', '').strip()
+    password = form.get('password', '').strip()
+    first_name = form.get('first', '').strip()
+    last_name = form.get('last', '').strip()
+    email = form.get('email', '').strip()
 
     if not all((username, password, email, first_name, last_name)):
         await flash("Please input to all forms.")
@@ -49,6 +49,10 @@ async def register():
 
     if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
         await flash("Username or email already taken.")
+        return await render_template('register.html')
+
+    if len(password) < 8:
+        await flash("Password must have at least 8 characters.")
         return await render_template('register.html')
 
     new_user = User(
