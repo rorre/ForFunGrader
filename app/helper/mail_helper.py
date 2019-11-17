@@ -12,6 +12,11 @@ async def set_user(id, value):
     USER_TOKENS[id] = ""
 
 async def send_mail(user, code):
+    if not app.smtp.is_connected:
+        await app.smtp.connect()
+        await app.smtp.ehlo()
+        await app.smtp.login(app.config.get('SMTP_USERNAME'), app.config.get('SMTP_PASSWORD'))
+    
     if USER_TASK.get(user.id):
         USER_TASK.get(user.id).cancel()
         USER_TOKENS[user.id] = ""

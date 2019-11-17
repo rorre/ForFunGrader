@@ -29,13 +29,6 @@ async def forbidden(error):
 async def notfound(error):
     return await render_template('notfound.html')
 
-async def keep_alive():
-    while True:
-        if not app.smtp.is_connected:
-            await app.smtp.connect()
-            await app.smtp.ehlo()
-            await app.smtp.login(app.config.get('SMTP_USERNAME'), app.config.get('SMTP_PASSWORD'))
-
 @app.before_serving
 async def startup():
     loop = asyncio.get_event_loop()
@@ -44,7 +37,6 @@ async def startup():
         await app.smtp.connect()
         await app.smtp.ehlo()
         await app.smtp.login(app.config.get('SMTP_USERNAME'), app.config.get('SMTP_PASSWORD'))
-        app.smtp_cron = asyncio.create_task(keep_alive())
     except errors.SMTPAuthenticationError as e:
         app.smtp = None
         print("Cannot seem to be able to connect.")
@@ -61,7 +53,6 @@ async def startup():
 async def shutdown():
     if app.smtp:
         app.smtp.close()
-        app.smtp_cron.cancel()
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
