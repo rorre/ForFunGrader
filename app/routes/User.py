@@ -38,18 +38,19 @@ async def user_avatar(img_path):
 @UserBlueprint.route('/settings/me', methods=["GET", "POST"])
 @login_required
 async def edit_me():
+    curme = html.unescape(current_user.me)
     if request.method == "GET":
-        return await render_template('edit_me.html', me=current_user.me)
+        return await render_template('edit_me.html', me=curme)
     
     me = (await request.form).get('me')
     if not me or len(me) < 5:
         await flash("Please input at least 5 characters.")
-        return await render_template('edit_me.html')
+        return await render_template('edit_me.html', me=curme)
 
     current_user.me = html.escape(me)
     db.session.commit()
     await flash("Done!")
-    return await render_template('edit_me.html', me=current_user.me)
+    return await render_template('edit_me.html', me=me)
 
 @UserBlueprint.route('/settings/info', methods=["GET", "POST"])
 @login_required
