@@ -80,6 +80,7 @@ async def create_problem():
         return await render_template('creator.html')
     except subprocess.CalledProcessError as e:
         await flash("An error has occured on your correct.py.")
+        await flash(e.stderr)
         return await render_template('creator.html')
 
     try:
