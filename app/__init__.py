@@ -30,10 +30,11 @@ async def notfound(error):
     return await render_template('notfound.html')
 
 async def keep_alive():
-    while not app.smtp.is_connected:
-        await app.smtp.connect()
-        await app.smtp.ehlo()
-        await app.smtp.login(app.config.get('SMTP_USERNAME'), app.config.get('SMTP_PASSWORD'))
+    while True:
+        if not app.smtp.is_connected:
+            await app.smtp.connect()
+            await app.smtp.ehlo()
+            await app.smtp.login(app.config.get('SMTP_USERNAME'), app.config.get('SMTP_PASSWORD'))
 
 @app.before_serving
 async def startup():
