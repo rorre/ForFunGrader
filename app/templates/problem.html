@@ -83,7 +83,7 @@
             success: function(js) {
                 
                 if (js.status == 200) {
-                    codeblock.html(js.message + " | Score +" + js.score)
+                    codeblock.html(js.message + " | Score: " + js.score)
                 } else if (js.status == 406) {
                     codeblock.html(`Error in executing script:\n${js.stdout}`)
                 } else if (js.err.expected) {
