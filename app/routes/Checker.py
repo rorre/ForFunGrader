@@ -7,6 +7,7 @@ import subprocess
 
 from flask_login import current_user
 from quart import Blueprint, jsonify, request
+from sqlalchemy import desc
 
 from app import db
 from app.models import Problem, Submission
@@ -37,7 +38,7 @@ def check_script(filename, test, max_time):
                 'maxtest': len(test_files),
                 'input': open(f"cases/{test}/{fname}").read()
             }, 'score': i}
-    return {'status': 200, 'message': 'OK', 'score': len(test_files)}
+    return {'status': 200, 'message': f'OK', 'score': len(test_files)}
 
 
 @CheckerBlueprint.route('/check', methods=['POST'])
@@ -76,12 +77,7 @@ async def check():
         os.unlink(save_path)
         return jsonify(result)
 
-    user_submissions = [s for s in current_user.submissions if s.problem_id == problem_db.id]
-    user_submissions.sort(key=lambda x: x.score, reverse=True)
-    best = None
-    if user_submissions:
-        best = user_submissions[0]
-
+    best = Submission.query.filter_by(problem=problem_db, user=current_user).order_by(desc(Submission.score)).first()
     submit_db = True
     if best and best.score > result['score']:
         os.unlink(save_path)

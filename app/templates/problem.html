@@ -13,6 +13,9 @@
 
 <h2>Problem - {{ problem.name }}</h2>
 <hr>
+{% if user_best %}
+    <p>Best score: {{ user_best.score }}/{{ user_best.problem.max_score }}</p>
+{% endif %}
 <h4>Details</h4>
 <p>File name: {{ problem.test_folder}}.py</p>
 {% for line in problem.details.splitlines() %}
@@ -80,7 +83,7 @@
             success: function(js) {
                 
                 if (js.status == 200) {
-                    codeblock.html(js.message)
+                    codeblock.html(js.message + " | Score +" + js.score)
                 } else if (js.status == 406) {
                     codeblock.html(`Error in executing script:\n${js.stdout}`)
                 } else if (js.err.expected) {

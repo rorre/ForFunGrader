@@ -1,8 +1,9 @@
-from app.models import Problem
+from app.models import Problem, Submission
 from quart import render_template, Blueprint, flash, url_for, redirect, request, abort
 from flask_login import login_required, current_user
 from app.helper import make_problem, call_child, make_random_str
 import os, subprocess, shutil, traceback, html
+from sqlalchemy import desc
 TaskBlueprint = Blueprint('task', __name__)
 
 
@@ -28,10 +29,11 @@ def test_checker(files, max_time):
 @login_required
 async def problem(problem_id):
     problem_db = Problem.query.get(problem_id)
+    user_best = Submission.query.filter_by(problem=problem_db, user=current_user).order_by(desc(Submission.score)).first()
     if not problem_db:
         await flash("No problemset found with that id.")
         return redirect(url_for('task.problems'))
-    return await render_template('problem.html', problem=problem_db)
+    return await render_template('problem.html', problem=problem_db, user_best=user_best)
 
 
 @TaskBlueprint.route('/problem')
